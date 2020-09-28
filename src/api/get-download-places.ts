@@ -1,11 +1,12 @@
+
 import { OptionProp } from "../types";
 import { db } from "./firebase-config";
 
-export const GetLoadingPlaces = async () => {
+export const GetDownloadPlaces = async () => {
   try {
     const data: OptionProp[] = [];
 
-    const querySnapshot = await db.collection('loading').get();
+    const querySnapshot = await db.collection('download').get();
 
     querySnapshot.forEach((doc) => {
       data.push(doc.data() as OptionProp)
