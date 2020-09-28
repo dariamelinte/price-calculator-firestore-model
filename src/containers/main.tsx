@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { ScrollView } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 
-import { Select, Row, FertilizerSelect } from '../components';
+import { Select, Row, FertilizerSelect, Notification } from '../components';
 import { useApiDataContex } from '../context';
+import { NotificationLength } from '../lib';
 import { normalizeHeight } from '../theme/metrics';
 import { FeritilizerProp, OptionProp } from '../types';
 
@@ -16,6 +17,12 @@ const Main: React.FC = () => {
   const { fertilizerList, loadingPlaces, downloadPlaces } = useApiDataContex();
 
   console.log(fertilizer, loadingPlace, downloadPlace);
+
+  const onShowPrice = () => {
+    if (!fertilizer || !loadingPlace || !downloadPlace) {
+      Notification.show('Completati toate campurile!', NotificationLength.SHORT)
+    }
+  }
 
   return (
     <ScrollView>
@@ -53,7 +60,7 @@ const Main: React.FC = () => {
         modalTitle={'Loc descarcare'}
       />
       <Row>
-        <Text>Submit</Text>
+        <Button onPress={onShowPrice}>Calculeaza</Button>
         <Text>Pret total</Text>
       </Row>
 
