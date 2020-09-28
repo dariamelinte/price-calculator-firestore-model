@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleProp, ViewStyle, TouchableOpacity, View, Modal, FlatList } from 'react-native';
-import { Button, Text } from 'react-native-paper';
+import { Button, Text, Title } from 'react-native-paper';
 
 import { Row } from '../general';
 import { OptionProp } from '../../types';
@@ -11,30 +11,42 @@ export type SelectProps = {
   title: string;
   containerStyle?: StyleProp<ViewStyle>;
   options: OptionProp[] | null;
+  onPressOption: (option: OptionProp) => void;
+  modalTitle: string;
 }
 
-const Select: React.FC<SelectProps> = ({ containerStyle, title, options }) => {
+const Select: React.FC<SelectProps> = ({
+  containerStyle,
+  title,
+  options,
+  onPressOption,
+  modalTitle
+}) => {
   const [showOptions, setShowOptions] = useState(false);
 
-  const renderOptions = ({ value, label }: OptionProp) => {
-    return (
-      <TouchableOpacity onPress={() => console.log(value)}>
+  const onSelect = (option: OptionProp) => {
+    onPressOption(option);
+    setShowOptions(false);
+  }
+
+  const renderOptions = (option: OptionProp) => (
+      <TouchableOpacity onPress={() => onSelect(option)}>
         <Row style={[styles.option, styles.box]}>
-          <Text style={styles.optionText}>{label}</Text>
+          <Text style={styles.optionText}>{option.label}</Text>
         </Row>
       </TouchableOpacity>
     );
-  }
 
   return (
     <View style={styles.centeredView}>
       <TouchableOpacity onPress={() => setShowOptions(true)}>
         <View style={[styles.container, styles.box, containerStyle]}>
-          <Text>{title}</Text>
+          <Text style={styles.optionText}>{title}</Text>
         </View>
       </TouchableOpacity>
       <Modal visible={showOptions} transparent={true}>
         <View style={styles.modalView}>
+          <Title>{modalTitle}</Title>
           <FlatList
             bounces={false}
             keyExtractor={({ value }) => value}

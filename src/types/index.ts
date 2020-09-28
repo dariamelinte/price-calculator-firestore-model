@@ -3,10 +3,10 @@ export type FeritilizerProp = {
   name: string;
   cash: number;
   finance: number;
-  location: string;
+  location?: string;
 }
 
 export type OptionProp = {
-  value: any;
+  value: string;
   label: string;
 }

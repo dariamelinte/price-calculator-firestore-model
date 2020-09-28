@@ -1,58 +1,31 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { ScrollView } from 'react-native';
 import { Button, Text } from 'react-native-paper';
-import { GetDownloadPlaces, GetFertilizerList, GetLoadingPlaces } from '../api';
 
 import { Select, Row, FertilizerSelect } from '../components';
+import { useApiDataContex } from '../context';
 import { normalizeHeight } from '../theme/metrics';
 import { FeritilizerProp, OptionProp } from '../types';
 
 const Main: React.FC = () => {
-  const [fertilizerList, setFertilizerList] = useState<FeritilizerProp[] | null>([]);
-  const [loadingPlaces, setLoadingPlaces] = useState<OptionProp[] | null>([]);
-  const [downloadPlaces, setDownloadPlaces] = useState<OptionProp[] | null>([]);
   const [payment, setPayment] = useState<'cash' | 'finance'>('cash');
+  const [fertilizer, setFertilizer] = useState<FeritilizerProp | null>(null);
+  const [loadingPlace, setLoadingPlace] = useState<OptionProp | null>(null);
+  const [downloadPlace, setDownloadPlace] = useState<OptionProp | null>(null);
 
-  useEffect(() => {
-    const fetchFertilizerList = async () => {
-      const { data, isOk } = await GetFertilizerList();
+  const { fertilizerList, loadingPlaces, downloadPlaces } = useApiDataContex();
 
-      if (isOk) {
-        setFertilizerList(data);
-      }
-    }
-
-    fetchFertilizerList();
-  }, []);
-
-  useEffect(() => {
-    const fetchLoadingPlaces = async () => {
-      const { data, isOk } = await GetLoadingPlaces();
-
-      if (isOk) {
-        setLoadingPlaces(data);
-      }
-    }
-
-    fetchLoadingPlaces();
-  }, []);
-
-  useEffect(() => {
-    const fetchDownloadPlaces = async () => {
-      const { data, isOk } = await GetDownloadPlaces();
-
-      if (isOk) {
-        setDownloadPlaces(data);
-      }
-    }
-
-    fetchDownloadPlaces();
-  }, []);
+  console.log(fertilizer, loadingPlace, downloadPlace);
 
   return (
     <ScrollView>
 
-      <FertilizerSelect title={'Tip ingrasamant'} options={fertilizerList} />
+      <FertilizerSelect
+        title={fertilizer ? fertilizer.name : 'Tip ingrasamant'}
+        options={fertilizerList}
+        onPressFertilizer={fertilizer => setFertilizer(fertilizer)}
+        modalTitle={'Tip ingrasamant'}
+      />
       <Row style={{ justifyContent: 'space-between', marginTop: normalizeHeight(20) }}>
         <Button
           mode={payment === 'cash' ? 'contained' : 'outlined'}
@@ -67,8 +40,18 @@ const Main: React.FC = () => {
           Finantare
         </Button>
       </Row>
-      <Select title={'Loc incarcare'} options={loadingPlaces} />
-      <Select title={'Loc descarcare'} options={downloadPlaces} />
+      <Select
+        title={loadingPlace ? loadingPlace.label : 'Loc incarcare'}
+        options={loadingPlaces}
+        onPressOption={(option) => setLoadingPlace(option)}
+        modalTitle={'Loc incarcare'}
+      />
+      <Select
+        title={downloadPlace ? downloadPlace.label : 'Loc descarcare'}
+        options={downloadPlaces}
+        onPressOption={(option) => setDownloadPlace(option)}
+        modalTitle={'Loc descarcare'}
+      />
       <Row>
         <Text>Submit</Text>
         <Text>Pret total</Text>

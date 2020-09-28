@@ -4,14 +4,17 @@ import { Provider as PaperProvider } from 'react-native-paper';
 
 import { commonStyles, theme } from './src/theme';
 import { Main } from './src/containers';
+import { ApiDataProvider } from './src/context';
 
 export default function App() {
   return (
     <PaperProvider theme={theme}>
-      <SafeAreaView style={commonStyles.container}>
-        <StatusBar barStyle='light-content' />
-        <Main />
-      </SafeAreaView>
+      <ApiDataProvider>
+        <SafeAreaView style={commonStyles.container}>
+          <StatusBar barStyle='light-content' />
+          <Main />
+        </SafeAreaView>
+      </ApiDataProvider>
     </PaperProvider>
   );
 };
