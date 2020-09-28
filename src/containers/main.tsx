@@ -6,7 +6,7 @@ import { Select, Row, FertilizerSelect, Notification } from '../components';
 import { useApiDataContex } from '../context';
 import { NotificationLength } from '../lib';
 import { normalizeHeight } from '../theme/metrics';
-import { FeritilizerProp, OptionProp } from '../types';
+import { FeritilizerProp, OptionProp, PriceCalculatorType } from '../types';
 
 const Main: React.FC = () => {
   const [payment, setPayment] = useState<'cash' | 'finance'>('cash');
@@ -14,14 +14,21 @@ const Main: React.FC = () => {
   const [loadingPlace, setLoadingPlace] = useState<OptionProp | null>(null);
   const [downloadPlace, setDownloadPlace] = useState<OptionProp | null>(null);
 
-  const { fertilizerList, loadingPlaces, downloadPlaces } = useApiDataContex();
-
-  console.log(fertilizer, loadingPlace, downloadPlace);
+  const { fertilizerList, loadingPlaces, downloadPlaces, isLoading, price, handlers } = useApiDataContex();
 
   const onShowPrice = () => {
     if (!fertilizer || !loadingPlace || !downloadPlace) {
-      Notification.show('Completati toate campurile!', NotificationLength.SHORT)
+      return Notification.show('Completati toate campurile', NotificationLength.SHORT)
     }
+
+    const priceData: PriceCalculatorType = {
+      fertilizer,
+      paymentType: payment,
+      downloadPlace: downloadPlace.value,
+      loadingPlace: loadingPlace.value
+    }
+
+    handlers.calculatePrice(priceData);
   }
 
   return (
@@ -59,9 +66,9 @@ const Main: React.FC = () => {
         onPressOption={(option) => setDownloadPlace(option)}
         modalTitle={'Loc descarcare'}
       />
-      <Row>
-        <Button onPress={onShowPrice}>Calculeaza</Button>
-        <Text>Pret total</Text>
+      <Row style={{ alignItems: 'center', justifyContent: 'space-between' }}>
+        <Button onPress={onShowPrice} loading={isLoading}>Calculeaza</Button>
+        {price && <Text style={{ padding: normalizeHeight(10) }}>{price}</Text>}
       </Row>
 
     </ScrollView>

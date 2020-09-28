@@ -6,7 +6,7 @@ export const GetFertilizerList = async () => {
   try {
     const data: FeritilizerProp[] = [];
 
-    const querySnapshot = await db.collection('fertilizer').orderBy("name", "asc").get();
+    const querySnapshot = await db.collection('fertilizer').orderBy('name', 'asc').get();
 
     querySnapshot.forEach((doc) => {
       data.push({ id: doc.id, ...doc.data()} as FeritilizerProp)
